@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!--=======STATE DG SEND EMAIL=========-->
+        <record id="email_template_management_dg" model="mail.template">
+            <field name="name">Courrier: Achat</field>
+            <field name="model_id" ref="thorium.model_purchase_order"/>
+            <field name="subject">Demande {{object.name}} en attente de validation</field>
+            <field name="email_from">{{(object.company_id.email_formatted or user.email_formatted)}}</field>
+            <field name="email_to">{{"dafgroup@gmail.com"}}</field>
+            <field name="email_cc">{{""}}</field>
+            <field name="auto_delete" eval="True"/>
+
+            <field name="body_html" type="xml">
+                <div style="background:#F0F0F0;color:#515166;padding:10px 0px;font-family:Arial,Helvetica,sans-serif;font-size:14px;">
+                    <table style="width:1000px;margin:5px auto;">
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <a href="/">
+                                        <img src="/web/binary/company_logo"
+                                             style="vertical-align:baseline;max-width:100px;"
+                                             class="d-block mx-auto o_we_selected_image"
+                                             data-original-title="${object.company_id.name}"
+                                             title="${object.company_id.name}" aria-describedby="PIGELEC"/>
+                                    </a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <table style="width:600px;margin:0px auto;background:white;border:1px solid #e1e1e1;">
+                        <tbody>
+                            <tr>
+                                <td style="padding:15px 20px 10px 20px;">
+                                    <div>
+                                        <h2>Cher DG </h2>
+                                        <br/>
+                                        <p>Vous avez reçu un courrier électronique important nécessitant votre attention sur une nouvelle commande.
+                                            <ul>
+                                                <li>Reference de la commande : <t t-out="object.name"/></li>
+                                                <li>Fournisseur : <t t-out="object.partner_id.name"/></li>
+                                                <li>Montant de la commande : <t t-out="object.currency_id.symbol"/> <t t-out="object.amount_total"/></li>
+
+                                            </ul>
+                                        </p>
+                                    </div>
+                                    <div style="margin: 16px 0px 16px 0px;" data-oe-t-group="0"
+                                         data-oe-t-group-active="true">
+                                        <a t-att-href="ctx.get('action_url')" target="_blank"
+                                           style="background-color: #875A7B; padding: 8px 16px 8px 16px; text-decoration: none; color: #fff; border-radius: 5px; font-size: 13px;">
+                                            Voir le courrier
+                                        </a>
+                                    </div>
+                                    <h3 style="color:#9E588B;">Cordialement.</h3>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </field>
+        </record>
+    </data>
+</odoo>

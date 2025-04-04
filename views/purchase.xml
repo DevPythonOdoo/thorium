@@ -1,0 +1,260 @@
+<odoo>
+    <data>
+        <record id="purchase_order_import_tree" model="ir.ui.view">
+            <field name="name">purchase.order.inherit.import.list</field>
+            <field name="model">purchase.order</field>
+            <field name="priority" eval="1"/>
+            <field name="arch" type="xml">
+                <list string="Purchase Order"
+                      decoration-muted="state=='cancel'" sample="1">
+                    <field name="priority" optional="show" widget="priority" nolabel="1"/>
+                    <field name="partner_ref" optional="hide"/>
+                    <field name="name" string="Reference" readonly="1" decoration-info="state in ('draft','sent')"/>
+                    <field name="date_order" column_invisible="not context.get('quotation_only', False)"
+                           readonly="state in ['cancel', 'done', 'purchase']" optional="show"/>
+                    <field name="date_approve" column_invisible="context.get('quotation_only', False)" optional="show"/>
+                    <field name="partner_id" readonly="1"/>
+                    <field name="company_id" readonly="1" options="{'no_create': True}"
+                           groups="base.group_multi_company" optional="show"/>
+                    <field name="user_id" optional="show"/>
+                    <field name="origin" optional="show"/>
+                    <field name="amount_untaxed" sum="Total Untaxed amount" string="Untaxed" widget="monetary"
+                           optional="hide"/>
+                    <field name="amount_total" sum="Total amount" widget="monetary" optional="show"/>
+                    <field name="currency_id" column_invisible="True"
+                           readonly="state in ['cancel', 'done', 'purchase']"/>
+                    <field name="state" optional="show"/>
+                    <field name="date_planned" column_invisible="context.get('quotation_only', False)" optional="show"/>
+                    <field name="invoice_status" column_invisible="context.get('quotation_only', False)"
+                           optional="hide"/>
+                    <field name="activity_exception_decoration" widget="activity_exception"/>
+                </list>
+            </field>
+        </record>
+
+        <record id="purchase_rfq_local" model="ir.actions.act_window">
+            <field name="name">Demande de prix local</field>
+            <field name="res_model">purchase.order</field>
+            <field name="view_mode">list,kanban,form,pivot,graph,calendar,activity</field>
+            <field name="domain">[('type','=','local')]</field>
+            <field name="search_view_id" ref="purchase.view_purchase_order_filter"/>
+            <field name="context">{'quotation_only': True}</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Aucune demande de devis local n'a été trouvée. Créons-en une !
+                </p>
+                <p>
+                    Les demandes de devis sont des documents qui seront envoyés à vos
+                    fournisseurs pour demander des prix pour différents produits que vous envisagez d'acheter.
+                    Une fois un accord trouvé avec le fournisseur,
+                    ils seront confirmés et transformés en bons de commande.
+                </p>
+            </field>
+        </record>
+
+        <record id="action_purchase_local" model="ir.actions.act_window">
+            <field name="name">Bon de Commande</field>
+            <field name="res_model">purchase.order</field>
+            <field name="view_mode">list,kanban,form,pivot,graph,calendar,activity</field>
+            <field name="view_ids" eval="[(5, 0, 0),
+                (0, 0, {'view_mode': 'list', 'view_id': ref('purchase.purchase_order_view_tree')}),
+                (0, 0, {'view_mode': 'kanban', 'view_id': ref('purchase.purchase_order_view_kanban_without_dashboard')}),
+            ]"/>
+            <field name="domain">[('state','in',('purchase', 'done')) and ('type','=','local')]</field>
+            <field name="search_view_id" ref="purchase.purchase_order_view_search"/>
+            <field name="context">{'default_quotation_only': True}</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Aucun bon de commande Local trouvé. Créons-en un !
+                </p>
+                <p>
+                    Une fois que vous avez commandé vos produits auprès de vos fournisseurs locaux, confirmez votre
+                    demande de devis et elle se transformera en bon de commande.
+                </p>
+            </field>
+        </record>
+
+        <record id="action_purchases_rfq_custom" model="ir.actions.act_window">
+            <field name="name">Demande de prix internationale</field>
+            <field name="res_model">purchase.order</field>
+            <field name="view_mode">list,kanban,form,pivot,graph,calendar,activity</field>
+            <field name="domain">[('type','=','import')]</field>
+            <field name="search_view_id" ref="purchase.view_purchase_order_filter"/>
+            <field name="context">{'default_quotation_only': True,'default_type':'import'}</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Aucune demande de devis international n'a été trouvée. Créons-en une !
+                </p>
+                <p>
+                    Les demandes de devis sont des documents qui seront envoyés à vos
+                    fournisseurs pour demander des prix pour différents produits que vous envisagez d'acheter.
+                    Une fois un accord trouvé avec le fournisseur,
+                    ils seront confirmés et transformés en bons de commande.
+                </p>
+            </field>
+        </record>
+
+        <record id="action_purchases_rfq_custom_2_inter" model="ir.actions.act_window">
+            <field name="name">Bon de commande international</field>
+            <field name="res_model">purchase.order</field>
+            <field name="view_mode">list,kanban,form,pivot,graph,calendar,activity</field>
+            <field name="domain">[('state', 'in', ['purchase', 'done']), ('type','=','import')]</field>
+            <field name="search_view_id" ref="purchase.view_purchase_order_filter"/>
+            <field name="context">{'default_quotation_only': True,'default_type':'import'}</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Aucune demande de devis international n'a été trouvée. Créons-en une !
+                </p>
+                <p>
+                    Les demandes de devis sont des documents qui seront envoyés à vos
+                    fournisseurs pour demander des prix pour différents produits que vous envisagez d'acheter.
+                    Une fois un accord trouvé avec le fournisseur,
+                    ils seront confirmés et transformés en bons de commande.
+                </p>
+            </field>
+        </record>
+
+        <record id="action_purchase_order_import" model="ir.actions.act_window">
+            <field name="name">Bon de Commande</field>
+            <field name="res_model">purchase.order</field>
+            <field name="view_mode">list,kanban,form,pivot,graph,calendar,activity</field>
+            <field name="view_ids" eval="[(5, 0, 0),
+                (0, 0, {'view_mode': 'list', 'view_id': ref('purchase.purchase_order_view_tree')}),
+                (0, 0, {'view_mode': 'kanban', 'view_id': ref('purchase.purchase_order_view_kanban_without_dashboard')}),
+            ]"/>
+            <field name="domain">[('state','in',('purchase', 'done')) and ('type','=','local')]</field>
+            <field name="search_view_id" ref="purchase.purchase_order_view_search"/>
+            <field name="context">{'default_quotation_only': True, 'default_type':'local'}</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Aucun bon de commande International trouvé. Créons-en un !
+                </p>
+                <p>
+                    Une fois que vous avez commandé vos produits auprès de vos fournisseurs internationaux, confirmez
+                    votre demande de devis et elle se transformera en bon de commande.
+                </p>
+            </field>
+        </record>
+
+        <record id="action_purchase_form" model="ir.actions.act_window">
+            <field name="name">Bon de Commande</field>
+            <field name="res_model">purchase.order</field>
+            <field name="view_mode">list,kanban,form,pivot,graph,calendar,activity</field>
+            <field name="view_ids" eval="[(5, 0, 0),
+                (0, 0, {'view_mode': 'list', 'view_id': ref('purchase.purchase_order_view_tree')}),
+                (0, 0, {'view_mode': 'kanban', 'view_id': ref('purchase.purchase_order_view_kanban_without_dashboard')}),
+            ]"/>
+            <field name="domain">[('state','in',('purchase', 'done')) and ('type','=','import')]</field>
+            <field name="search_view_id" ref="purchase.purchase_order_view_search"/>
+            <field name="context">{'default_quotation_only': True, 'default_type':'import'}</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Aucun bon de commande International trouvé. Créons-en un !
+                </p>
+                <p>
+                    Une fois que vous avez commandé vos produits auprès de vos fournisseurs internationaux, confirmez
+                    votre demande de devis et elle se transformera en bon de commande.
+                </p>
+            </field>
+        </record>
+
+        <record id="action_purchase_import_inter" model="ir.actions.act_window.view">
+            <field name="sequence" eval="0"/>
+            <field name="view_mode">list</field>
+            <field name="view_id" ref="purchase_order_import_tree"/>
+            <field name="act_window_id" ref="action_purchases_rfq_custom_2_inter"/>
+        </record>
+
+        <record id="action_purchase_import" model="ir.actions.act_window.view">
+            <field name="sequence" eval="0"/>
+            <field name="view_mode">list</field>
+            <field name="view_id" ref="purchase_order_import_tree"/>
+            <field name="act_window_id" ref="action_purchases_rfq_custom"/>
+        </record>
+
+        <!-- Inherit Form View to Modify it -->
+        <record id="purchases_view_form_inherit" model="ir.ui.view">
+            <field name="name">h_purchase.form</field>
+            <field name="model">purchase.order</field>
+            <field name="inherit_id" ref="purchase.purchase_order_form"/>
+            <field name="arch" type="xml">
+                <!-- Insertion après le bloc date_approve -->
+                <xpath expr="//div[@name='date_approve']" position="after">
+                    <!-- Premier champ : date_of_availability -->
+                    <label for="date_of_availability"/>
+                    <div class="o_row">
+                        <field name="date_of_availability"/>
+                    </div>
+                    <!-- Second champ : estimated_arrival_date -->
+                    <label for="estimated_arrival_date"/>
+                    <div class="o_row">
+                        <field name="estimated_arrival_date"/>
+                    </div>
+                </xpath>
+
+                <xpath expr="//field[@name='price_unit']" position="before">
+                    <field name="estimated_cost"/>
+                </xpath>
+                <xpath expr="//field[@name='price_unit']" position="after">
+                    <field name="container_number"/>
+                </xpath>
+
+                <notebook position="inside">
+                    <page string="Validateurs">
+                        <group>
+                            <group string="Validateur">
+                                <field name="validator_id" widget="many2one_avatar_employee"/>
+                                <field name="date_validation"/>
+                            </group>
+                            <group string="Approbateur">
+                                <field name="approve_id" widget="many2one_avatar_employee"/>
+                                <field name="date_approve"/>
+                            </group>
+                        </group>
+                    </page>
+                </notebook>
+
+                 <xpath expr="//header/button[@name='button_confirm']" position="replace">
+                    <button name="button_action_submit" string="Soumettre" type="object" invisible="state not in ('sent','draft')"/>
+                </xpath>
+
+                <xpath expr="//header/button[@name='button_confirm']" position="attributes">
+                    <attribute name="invisible">True</attribute>
+                </xpath>
+
+                <xpath expr="//button[@name='button_confirm']" position="after">
+                    <button name="button_action_approuve_daf" invisible="state != 'submit'" string="Valider" type="object" class="oe_highlight"  groups="thorium.group_thorium_respo"/>
+<!--                    <button name="send_email" string="Envoyer le mail"  invisible="state != 'submit'" type="object" />-->
+                    <button name="button_cancel" invisible="state != 'submit'" string="Annuler" type="object" data-hotkey="x" groups="thorium.group_thorium_respo"/>
+                </xpath>
+
+
+                <xpath expr="//button[@name='button_action_submit']" position="after">
+                    <button name="button_confirm_test" invisible="state != 'approved'" string="Approuver" type="object" class="oe_highlight" groups="thorium.group_thorium_respo"/>
+                    <button name="button_cancel" invisible="state != 'approved'"  string="Annuler" type="object" groups="thorium.group_thorium_manager"/>
+                </xpath>
+
+                <xpath expr="//field[@name='state']" position="replace">
+                    <field name="state" widget="statusbar" statusbar_visible="draft,sent,submit,purchase" readonly="1"/>
+                </xpath>
+
+            </field>
+        </record>
+
+
+        <menuitem id="menu_purchase_local" name="Achat Local" parent="purchase.menu_procurement_management"
+                  sequence="0"/>
+        <menuitem id="purchase.menu_purchase_rfq" parent="menu_purchase_local" sequence="1"
+                  action="purchase_rfq_local"/>
+        <menuitem id="purchase.menu_purchase_form_action" name="Bons de Commande" parent="menu_purchase_local"
+                  sequence="2" action="action_purchase_order_import"/>
+
+        <menuitem id="menu_oders_import" name="Achat International" parent="purchase.menu_procurement_management"
+                  sequence="1"/>
+        <menuitem id="menu_purchase_import" name="Demande de prix" parent="menu_oders_import"
+                  action="action_purchases_rfq_custom" sequence="1"/>
+        <menuitem id="menu_purchase_import3" name="Bon de Commande" parent="menu_oders_import"
+                  action="action_purchases_rfq_custom_2_inter" sequence="2"/>
+
+    </data>
+</odoo>

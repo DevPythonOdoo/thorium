@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!--######## VALIDATION ########-->
+
+        <record id="validator_hr_expense_tree_view" model="ir.ui.view">
+            <field name="name">Validator</field>
+            <field name="model">expense.validator</field>
+            <field name="arch" type="xml">
+                <list string="Validateurs" editable="bottom">
+                    <field name="user_id" widget="many2one_avatar_employee" string="Validateur"/>
+                    <field name="type_validator"/>
+                </list>
+            </field>
+        </record>
+
+
+        <record id="sales_config_view_form_inherit" model="ir.ui.view">
+            <field name="name">config.sale.form</field>
+            <field name="model">res.config.settings</field>
+            <field name="inherit_id" ref="purchase.res_config_settings_view_form_purchase"/>
+            <field name="priority" eval="8"/>
+            <field name="arch" type="xml">
+                <xpath expr="//setting[@id='product_matrix']" position="inside">
+                    <label for="cash_amount"/>
+                    <field name="cash_amount" force_save="1"/>
+                </xpath>
+            </field>
+        </record>
+
+
+        <record id="validators_expense_act_window" model="ir.actions.act_window">
+            <field name="name">Validateurs</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">expense.validator</field>
+            <field name="view_mode">list</field>
+        </record>
+
+
+        <menuitem id="menu_validateur" name="Validateurs" parent="purchase.menu_purchase_config" action="validators_expense_act_window" sequence="5"/>
+
+    </data>
+</odoo>

@@ -1,0 +1,4 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_expense_validator_user,user.expense.validator,model_expense_validator,thorium.group_thorium_user,1,1,0,0
+access_expense_validator_respo,respo.expense.validator,model_expense_validator,thorium.group_thorium_respo,1,1,1,0
+access_expense_validator_manager,manager.expense.validator,model_expense_validator,thorium.group_thorium_manager,1,1,1,1

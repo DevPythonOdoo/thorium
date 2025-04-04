@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="customer_view_form_inherit" model="ir.ui.view">
+            <field name="name">res.partner.view</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_partner_form"/>
+            <field name="priority" eval="1"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='phone']" position="before">
+                    <field name="supplier_type" widget="radio" options="{'horizontal': True}" invisible="supplier_rank == 0"
+                    />
+                </xpath>
+                <xpath expr="//field[@name='vat']" position="after">
+                    <div name="Expected_reception_period" colspan="2" class="o_checkbox_optional_field">
+                        <label for="Expected_reception_period"/>
+                        <div invisible="supplier_rank == 0">
+                            <field name="Expected_reception_period" class="oe_inline"/>
+                            <span>En jour(s)</span>
+                        </div>
+
+                    </div>
+                </xpath>
+            </field>
+        </record>
+
+    </data>
+</odoo>
