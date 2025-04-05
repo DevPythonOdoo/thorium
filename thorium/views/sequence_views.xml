@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="purchase_import_sequence" model="ir.sequence">
+        <field name="name">Purchase Import Sequence</field>
+        <field name="code">purchase.import</field>
+        <field name="prefix">BCI/%(year)s/</field>
+        <field name="padding">4</field>
+        <field name="company_id" eval="False"/>
+    </record>
+
+
+    <!-- Type de réception pour achat local (une étape) -->
+    <record id="stock_picking_type_reception_local" model="stock.picking.type">
+        <field name="name">Réception Local</field>
+        <field name="code">incoming</field>
+        <field name="sequence_code">Local</field>
+        <!-- Référence aux emplacements, à adapter à votre configuration -->
+        <field name="default_location_src_id" ref="stock.stock_location_suppliers"/>
+        <field name="default_location_dest_id" ref="stock.stock_location_stock"/>
+    </record>
+
+    <!-- Type de réception pour achat import (trois étapes) -->
+    <record id="stock_picking_type_reception_import" model="stock.picking.type">
+        <field name="name">Réception Import</field>
+        <field name="code">incoming</field>
+        <field name="sequence_code">Import</field>
+        <!-- Vous pouvez ici définir des règles ou des itinéraires spécifiques pour simuler les 3 étapes -->
+        <field name="default_location_src_id" ref="stock.stock_location_suppliers"/>
+        <field name="default_location_dest_id" ref="stock.stock_location_stock"/>
+    </record>
+
+
+</odoo>
